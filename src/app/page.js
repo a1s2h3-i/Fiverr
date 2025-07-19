@@ -1,3 +1,4 @@
+'use client'
 import Companies from "@/components/Companies";
 import Everything from "@/components/Everything";
 import FiverrBusiness from "@/components/FiverrBusiness";
@@ -7,8 +8,10 @@ import PopularService from "@/components/PopularService";
 
 import Services from "@/components/Services";
 import AuthWrapper from "@/components/AuthWrapper";
+import { useStateProvider } from "@/context/StateContext";
 
 export default function Home() {
+  const [{showLoginModal,showSignUpModal}]=useStateProvider();
   return (
     <>
    <div>
@@ -19,7 +22,8 @@ export default function Home() {
     <Services/>
     <FiverrBusiness/>
     <JoinFiverr/>
-    <AuthWrapper/>
+    {(showLoginModal||showSignUpModal)&&(<AuthWrapper  type={showLoginModal?"login":"signup"}/>)}
+   
     
    
    </div>
