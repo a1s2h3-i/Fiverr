@@ -3,14 +3,40 @@ import { useStateProvider } from '@/context/StateContext'
 import React, { useState } from 'react'
 import {FcGoogle} from 'react-icons/fc'
 import {MdFacebook} from 'react-icons/md'
-
+import axios from 'axios'
+import { LOGIN_ROUTE, SIGNUP_ROUTE } from '@/utils/constants'
+import { useCookies } from 'react-cookie'
 
 const AuthWrapper = ({type}) => {
+    const [cookies,setcookies]=useCookies()
     const [{showLoginModal,showSignupModal},dispatch]=useStateProvider();
     const [values,setvalues]=useState({email:"",password:""});
 
     const handleChange=(e)=>{
         setvalues({...values,[e.target.name]:e.target.value});
+    }
+    const handleClick=async()=>{
+        try {
+            const {email,password}=values;
+            if(email&&password){
+                const {data:{user,jwt},}=await axios.post(
+                    type==="login"?LOGIN_ROUTE:
+                    SIGNUP_ROUTE,{email,password},{withCredentials:true}
+
+                )
+                setcookies("jwt",{jwt})
+                dispatch({type:reducerCases.CLOSE_AUTH_MODAL})
+                if(user){
+                    dispatch({type:reducerCases.SET_USER,userInfo:user})
+                    window.location.reload();
+                }
+                console.log(response);
+            }
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
     }
   return (
    <div className='fixed top-0 z-[100]'>
@@ -39,9 +65,9 @@ const AuthWrapper = ({type}) => {
             </div>
             <div className='flex flex-col gap-5'>
                 <input type="text" name="email" placeholder="Email" className='border border-slate-300 p-3 w-80' value={values.email} onChange={handleChange }/>
-                <input type="text" name="Password" placeholder="Password" className='border border-slate-300 p-3 w-80'  value={values.password} onChange={handleChange}/>
+                <input type="password" name="password" placeholder="Password" className='border border-slate-300 p-3 w-80'  value={values.password} onChange={handleChange}/>
 
-                <button className='bg-[#1DBF73] text-white px-12 text-lg font-semibold rounded-r-md p-3 w-80'>Continue</button>
+                <button className='bg-[#1DBF73] text-white px-12 text-lg font-semibold rounded-r-md p-3 w-80' onClick={handleClick}>Continue</button>
             </div>
             </div>
             <div className='py-5 w-full flex items-center justify-center border-t border-r-slate-400'>
