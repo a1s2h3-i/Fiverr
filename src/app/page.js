@@ -11,7 +11,7 @@ import AuthWrapper from "@/components/AuthWrapper";
 import { useStateProvider } from "@/context/StateContext";
 
 export default function Home() {
-  const [{showLoginModal,showSignUpModal}]=useStateProvider();
+  const [{showLoginModal,showSignupModal}]=useStateProvider();
   return (
     <>
    <div>
@@ -22,7 +22,7 @@ export default function Home() {
     <Services/>
     <FiverrBusiness/>
     <JoinFiverr/>
-    {(showLoginModal||showSignUpModal)&&(<AuthWrapper  type={showLoginModal?"login":"signup"}/>)}
+    {(showLoginModal||showSignupModal)&&(<AuthWrapper  type={showLoginModal?"login":"signup"}/>)}
    
     
    

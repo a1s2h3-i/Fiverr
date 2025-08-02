@@ -2,8 +2,9 @@
 import { reducerCases } from "./constants";
 export const initialState={
     showLoginModal:false,
-    showSignUpModal:true,
-    userInfo:undefined
+    showSignupModal:false,
+    userInfo:undefined,
+    isSeller:false,
 
 }
 
@@ -23,15 +24,21 @@ const reducer=(state,action)=>{
                     return{
                         ...state,
                         showLoginModal:false,
-                        showSignUpModal:false,
+                        showSignupModal:false,
 
                     }
                     case reducerCases.SET_USER:
                         return{
                             ...state,
-                           userInfo:action.userInfo
+                           userInfo:action.userInfo,
+                           
     
                         }
+                        case reducerCases.SWITCH_MODE:
+                            return {
+                                ...state,
+                                isSeller: !state.isSeller,
+                              };
     
 
         default:

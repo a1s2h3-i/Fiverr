@@ -15,29 +15,39 @@ const AuthWrapper = ({type}) => {
     const handleChange=(e)=>{
         setvalues({...values,[e.target.name]:e.target.value});
     }
-    const handleClick=async()=>{
-        try {
-            const {email,password}=values;
-            if(email&&password){
-                const {data:{user,jwt},}=await axios.post(
-                    type==="login"?LOGIN_ROUTE:
-                    SIGNUP_ROUTE,{email,password},{withCredentials:true}
+    // After login/signup success:
+const handleClick=async()=>{
+  try {
+    const {email,password} = values;
+    if(email && password){
+      const {data: {user, jwt}} = await axios.post(
+        type === "login" ? LOGIN_ROUTE : SIGNUP_ROUTE,
+        {email, password},
+        {withCredentials: true}
+      );
 
-                )
-                setcookies("jwt",{jwt})
-                dispatch({type:reducerCases.CLOSE_AUTH_MODAL})
-                if(user){
-                    dispatch({type:reducerCases.SET_USER,userInfo:user})
-                    window.location.reload();
-                }
-                console.log(response);
-            }
-            
-        } catch (error) {
-            console.log(error);
-            
-        }
+      setcookies("jwt", jwt, { path: "/", sameSite: "lax" });
+
+      // Normalize user:
+      let projectedUserInfo = {...user};
+      if(user.image){
+        projectedUserInfo.imageName = HOST + "/" + user.image;
+      }
+      delete projectedUserInfo.image;
+
+      dispatch({type: reducerCases.SET_USER, userInfo: projectedUserInfo});
+      dispatch({type: reducerCases.CLOSE_AUTH_MODEL}); // or toggle modals accordingly
+
+      // Avoid page reload:
+      // Optionally navigate somewhere or just close modal
+      // router.push("/profile"); or wherever
+
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
   return (
    <div className='fixed top-0 z-[100]'>
     <div className='h-[100vh] w-[100vw] backdrop-blur-md fixed top-0 ' id="blur-div"></div>
